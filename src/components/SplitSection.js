@@ -1,21 +1,35 @@
 import React from "react";
+import PropTypes from "prop-types";
 
+/**
+ * SplitSection
+ *  - Two-column content block (left/right) with optional titles, HTML content, and list items.
+ *  - If both sides are empty, renders null.
+ *  - NOTE: `content` supports HTML via `dangerouslySetInnerHTML`. Ensure the HTML is sanitized upstream.
+ */
 const SplitSection = ({ left = {}, right = {} }) => {
   const renderBlock = ({ title, content, items = [] }) => {
-    if (!content && (!items || items.length === 0)) return null;
+    const hasContent = Boolean(content) || (Array.isArray(items) && items.length > 0);
+    if (!hasContent) return null;
+
     return (
       <div>
-        {title && <h3 className="text-xl font-semibold text-white mb-3">{title}</h3>}
+        {title && <h3 className="mb-3 text-xl font-semibold text-white">{title}</h3>}
+
         {content && (
           <div
-            className="text-white leading-relaxed space-y-3"
+            className="space-y-3 leading-relaxed text-white"
+            // Ensure `content` is sanitized before passing here.
             dangerouslySetInnerHTML={{ __html: content }}
           />
         )}
-        {items?.length > 0 && (
-          <ul className="space-y-2 mt-3 list-disc list-inside text-white">
+
+        {Array.isArray(items) && items.length > 0 && (
+          <ul className="mt-3 list-inside list-disc space-y-2 text-white">
             {items.map((it, i) => (
-              <li key={i} className="leading-relaxed">{it}</li>
+              <li key={i} className="leading-relaxed">
+                {it}
+              </li>
             ))}
           </ul>
         )}
@@ -23,19 +37,34 @@ const SplitSection = ({ left = {}, right = {} }) => {
     );
   };
 
-  if ((!left.content && (!left.items || left.items.length === 0)) &&
-      (!right.content && (!right.items || right.items.length === 0))) return null;
+  const leftHas = Boolean(left?.content) || (Array.isArray(left?.items) && left.items.length > 0);
+  const rightHas = Boolean(right?.content) || (Array.isArray(right?.items) && right.items.length > 0);
+
+  if (!leftHas && !rightHas) return null;
 
   return (
-    <div className="bg-gradient-to-br from-[#36454F] to-[#36454F] rounded-xl shadow-lg overflow-hidden">
+    <section className="overflow-hidden rounded-xl bg-[#36454F] shadow-lg">
       <div className="p-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           <div>{renderBlock(left)}</div>
           <div className="md:border-l md:border-gray-700 md:pl-6">{renderBlock(right)}</div>
         </div>
       </div>
-    </div>
+    </section>
   );
+};
+
+SplitSection.propTypes = {
+  left: PropTypes.shape({
+    title: PropTypes.string,
+    content: PropTypes.string, // HTML string; sanitize upstream
+    items: PropTypes.arrayOf(PropTypes.node),
+  }),
+  right: PropTypes.shape({
+    title: PropTypes.string,
+    content: PropTypes.string, // HTML string; sanitize upstream
+    items: PropTypes.arrayOf(PropTypes.node),
+  }),
 };
 
 export default SplitSection;

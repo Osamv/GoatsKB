@@ -1,45 +1,85 @@
 import React from "react";
+import PropTypes from "prop-types";
 import { X } from "lucide-react";
 
-const Sidebar = ({ isOpen, onClose, relatedArticles, onArticleClick }) => (
-  <>
-    {isOpen && (
-      <div className="fixed inset-0 bg-black bg-opacity-70 z-40 lg:hidden" onClick={onClose} />
-    )}
-    <aside
-      className={`fixed lg:sticky top-20 left-0 h-[calc(100vh-5rem)] w-80 bg-[#1D252D] border border-gray-700 rounded-xl shadow-2xl p-6 overflow-y-auto z-50 transition-all duration-300 ${
-        isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
-      }`}
-    >
-      <div className="flex items-center justify-between mb-6 lg:hidden">
-        <h3 className="text-lg font-bold text-white">Related</h3>
-        <button onClick={onClose} className="p-2 hover:bg-gray-700 rounded-lg">
-          <X className="w-6 h-6 text-gray-400" />
-        </button>
-      </div>
-      {relatedArticles?.length > 0 && (
-        <div>
-          <h3 className="text-lg font-bold text-white mb-4">Related Articles</h3>
-          <div className="space-y-3">
-            {relatedArticles.map((article) => (
-              <div
-                key={article.id}
-                onClick={() => onArticleClick(article)}
-                className="cursor-pointer hover:bg-gray-800 p-3 rounded-lg transition-all group"
-              >
-                <p className="text-sm font-medium text-gray-300 group-hover:text-[#36454F] line-clamp-2">
-                  {article.title}
-                </p>
-                <p className="text-xs text-gray-500 mt-1">
-                  {article.date} • {article.readTime}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
+/**
+ * Sidebar
+ *  - Responsive related-articles sidebar.
+ *  - On mobile, overlays the page and can be dismissed by clicking the backdrop or the close button.
+ */
+const Sidebar = ({ isOpen, onClose, relatedArticles = [], onArticleClick }) => {
+  const hasRelated = Array.isArray(relatedArticles) && relatedArticles.length > 0;
+
+  return (
+    <>
+      {/* Backdrop for mobile */}
+      {isOpen && (
+        <div
+          className="fixed inset-0 z-40 bg-black/70 lg:hidden"
+          onClick={onClose}
+          aria-hidden="true"
+        />
       )}
-    </aside>
-  </>
-);
+
+      <aside
+        className={`fixed left-0 top-20 z-50 h-[calc(100vh-5rem)] w-80 transform overflow-y-auto rounded-xl border border-gray-700 bg-[#1D252D] p-6 shadow-2xl transition-all duration-300 lg:sticky ${
+          isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
+        }`}
+        aria-label="Related articles sidebar"
+        aria-hidden={!isOpen && typeof window !== "undefined" && window.innerWidth < 1024}
+      >
+        {/* Mobile header */}
+        <div className="mb-6 flex items-center justify-between lg:hidden">
+          <h3 className="text-lg font-bold text-white">Related</h3>
+          <button
+            onClick={onClose}
+            className="rounded-lg p-2 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-[#FF6A39]/60"
+            aria-label="Close sidebar"
+          >
+            <X className="h-6 w-6 text-gray-400" />
+          </button>
+        </div>
+
+        {hasRelated && (
+          <div>
+            <h3 className="mb-4 text-lg font-bold text-white">Related Articles</h3>
+            <div className="space-y-3">
+              {relatedArticles.map((article) => (
+                <button
+                  key={article.id}
+                  type="button"
+                  onClick={() => onArticleClick?.(article)}
+                  className="group w-full cursor-pointer rounded-lg p-3 text-left transition-all hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-[#FF6A39]/60"
+                  aria-label={`Open related article: ${article.title}`}
+                >
+                  <p className="line-clamp-2 text-sm font-medium text-gray-300 group-hover:text-[#36454F]">
+                    {article.title}
+                  </p>
+                  <p className="mt-1 text-xs text-gray-500">
+                    {article.date} • {article.readTime}
+                  </p>
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+      </aside>
+    </>
+  );
+};
+
+Sidebar.propTypes = {
+  isOpen: PropTypes.bool,
+  onClose: PropTypes.func,
+  relatedArticles: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+      title: PropTypes.string,
+      date: PropTypes.string,
+      readTime: PropTypes.string,
+    })
+  ),
+  onArticleClick: PropTypes.func,
+};
 
 export default Sidebar;

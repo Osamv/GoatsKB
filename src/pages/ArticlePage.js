@@ -22,6 +22,11 @@ const ArticlePage = () => {
     ).slice(0, 4);
   }, [article]);
 
+
+
+
+
+
   const onArticleClick = useCallback(
     (a) => {
       navigate(`/article/${a.id}`);
