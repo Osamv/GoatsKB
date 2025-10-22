@@ -1,4 +1,4 @@
-const ARTICLES_DATA = [
+/*const ARTICLES_DATA = [
   {
     id: 1,
     title: "Main Balance",
@@ -58,14 +58,41 @@ const ARTICLES_DATA = [
         "For other methods: The VAT is applied to the amount recharged",
       ],
 
-      notabletorecharge: [
-        "Ensure that the credit/mada card has sufficient balance and is valid.",
-        "Step one:",
-        " * Check ItsOn or customer care portal (Cash Balance History) to see if there is a successful transaction",
-        " * Check PayGo balance if the amount was added there if the number is 1.0. ",
-      ],
-    },
+    notabletorecharge: `
+      <p>Ensure that the credit/mada card has sufficient balance and is valid.</p>
+
+      <p><strong>Step one:</strong></p>
+      <ul>
+        <li>Check ItsOn or customer care portal (Cash Balance History) to see if there is a successful transaction.</li>
+        <li>Check PayGo balance if the amount was added there if the number is 1.0.</li>
+      </ul>
+
+      <p><strong>Step two:</strong></p>
+      <ul>
+        <li>Full &amp; Complete Screenshot of the error message</li>
+        <li>Type of card/country issued (if accepted in Jawwy or not)</li>
+        <li>Recharging from Jawwy App/Website?</li>
+        <li>Have enough balance on the Credit/Mada card?</li>
+        <li>Using a valid Credit/Mada card? (Not expired)</li>
+        <li>Filling in the card details correctly?</li>
+        <li>Has he used the same card successfully before in Jawwy?</li>
+        <li>Try another card.</li>
+      </ul>
+
+      <p><strong>Step three:</strong></p>
+      <ul>
+        <li>Inform the customer of other alternate recharge methods.</li>
+        <li>Escalate with all the required details.</li>
+      </ul>
+    `,
   },
+},
+
+
+
+
+
+
   {
     id: 2,
     title: "Validation Process (Security Questions)",
@@ -209,3 +236,4 @@ const ARTICLES_DATA = [
 ];
 
 export default ARTICLES_DATA;
+*/
